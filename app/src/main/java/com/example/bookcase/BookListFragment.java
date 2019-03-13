@@ -15,3 +15,4 @@ public class BookListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_book_list, container, false);
     }
 }
+
