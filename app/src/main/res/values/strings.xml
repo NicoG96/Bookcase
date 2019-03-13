@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">Bookcase</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="books">
+        <item>The Count of Monte Cristo</item>
+        <item>1984</item>
+        <item>100 Years of Solitude</item>
+        <item>Harry Potter &amp; the Order of the Phoenix</item>
+        <item>A Short History of Nearly Everything</item>
+        <item>The Raven</item>
+        <item>Ender's Game</item>
+        <item>The Giver</item>
+        <item>And Then There Were None</item>
+        <item>Flowers for Algernon</item>
+    </string-array>
 </resources>
