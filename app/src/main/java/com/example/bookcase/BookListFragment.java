@@ -1,6 +1,7 @@
 package com.example.bookcase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class BookListFragment extends Fragment {
+    //var to check if app has just been run
+    boolean notFirstRun = false;
 
     public BookListFragment() {}
     onBookSelectedListener callback;
@@ -41,7 +44,7 @@ public class BookListFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_book_list, container, false);
 
         //get the parent activity context
-        Context ctx = getContext();
+        final Context ctx = getContext();
         assert ctx != null;
 
         //find the listview and create its corresponding object
@@ -54,20 +57,24 @@ public class BookListFragment extends Fragment {
         booklist.setAdapter(adapter);
 
         //create listener for each book
-        booklist.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        booklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                //change the background color of the second fragment
-                //callback.onBookSelected(position);
-            }
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //create intent to open the book details window
+                Intent intent = new Intent(ctx, bookDetails.class);
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //do nothing
+                //send chosen book along with intent
+                intent.putExtra("book", position);
+
+                //start new window
+                if(notFirstRun) {
+                    startActivity(intent);
+                } else {
+                    notFirstRun = true;
+                }
             }
         });
-
         return v;
     }
 }
