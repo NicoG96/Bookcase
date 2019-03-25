@@ -61,18 +61,7 @@ public class BookListFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //create intent to open the book details window
-                Intent intent = new Intent(ctx, bookDetails.class);
-
-                //send chosen book along with intent
-                intent.putExtra("book", position);
-
-                //start new window
-                if(notFirstRun) {
-                    startActivity(intent);
-                } else {
-                    notFirstRun = true;
-                }
+                callback.onBookSelected(position);
             }
         });
         return v;

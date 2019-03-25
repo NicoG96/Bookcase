@@ -1,9 +1,11 @@
 package com.example.bookcase;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.onBookSelectedListener {
+    boolean notFirstRun = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,8 +15,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void onBookSelected(int position) {
-        BookDetailsFragment book = (BookDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_details);
-        assert book != null;
-        book.displayBook(position);
+        //create intent to open the book details window
+        Intent intent = new Intent(this, bookDetails.class);
+
+        //send chosen book along with intent
+        intent.putExtra("book", position);
+
+        //start new window
+        if(notFirstRun) {
+            startActivity(intent);
+        } else {
+            notFirstRun = true;
+        }
     }
 }
