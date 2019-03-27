@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
     private int bookSelected;
-    private int SIZE;
 
     public FragmentCollectionAdapter(FragmentManager fm) {
         super(fm);
@@ -29,14 +28,10 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return SIZE;
+        return 10;
     }
 
     public void setBookSelected(int bookSelected) {
         this.bookSelected = bookSelected;
-    }
-
-    public void setSIZE(int size) {
-        this.SIZE = size;
     }
 }

@@ -33,9 +33,6 @@ public class bookDetails extends FragmentActivity {
         //send the book array index to the adapter
         pAdapter.setBookSelected(index);
 
-        //determine the number of views by subtracting the indexed item from array size
-        pAdapter.setSIZE(10-index);
-
         //set the pager to use this adapter containing the pages
         vPager.setAdapter(pAdapter);
     }
