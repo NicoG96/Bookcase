@@ -1,27 +1,26 @@
 package com.example.bookcase;
 
-import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 
-public class bookDetails extends AppCompatActivity {
+public class bookDetails extends FragmentActivity {
+    //set up class vars
+    private ViewPager vPager;
+    private FragmentCollectionAdapter pAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_book_details);
+        setContentView(R.layout.pager);
 
-        //load the book array
-        Resources res = getResources();
-        String books[] = res.getStringArray(R.array.books);
+        //Instantiate a ViewPager from the xml item
+        vPager = findViewById(R.id.pager);
 
-        //get the intent
-        Intent intent = getIntent();
+        //instantiate a new page adapter (uses the fragment class to create objects for vPager)
+        pAdapter = new FragmentCollectionAdapter(getSupportFragmentManager());
 
-        //get the color index from the intent
-        int index = intent.getIntExtra("book", 0);
-
-        //change title based on this intent
-        this.setTitle(books[index]);
+        //set the pager to use this adapter containing the pages
+        vPager.setAdapter(pAdapter);
     }
 }
