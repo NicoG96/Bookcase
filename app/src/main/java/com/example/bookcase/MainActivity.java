@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.onBookSelectedListener {
-    boolean notFirstRun = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,11 +20,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         //send chosen book along with intent
         intent.putExtra("book", position);
 
-        //start new window
-        if(notFirstRun) {
-            startActivity(intent);
-        } else {
-            notFirstRun = true;
-        }
+        startActivity(intent);
     }
 }
