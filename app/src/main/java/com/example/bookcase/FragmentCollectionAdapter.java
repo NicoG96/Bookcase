@@ -28,7 +28,7 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 10;
+        return 25;
     }
 
     public void setBookSelected(int bookSelected) {
