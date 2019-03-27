@@ -13,16 +13,21 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
+        //create an instance of a detail fragment, along with its respective bundle
         BookDetailsFragment bdf = new BookDetailsFragment();
         Bundle bundle = new Bundle();
         i++;
-        bundle.putString("message", "hello from: " + i);
+
+        //send the index along with the bundle
+        bundle.putInt("index", i);
         bdf.setArguments(bundle);
+
+        //return the object of everything just created
         return bdf;
     }
 
     @Override
     public int getCount() {
-        return 100;
+        return 10;
     }
 }
