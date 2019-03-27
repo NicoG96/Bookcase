@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Bookcase</string>
+    <string name="search_button">Go</string>
+    <string name="search_text">Search</string>
 
     <string-array name="books">
         <item>The Count of Monte Cristo</item>
@@ -13,4 +15,5 @@
         <item>And Then There Were None</item>
         <item>Flowers for Algernon</item>
     </string-array>
+
 </resources>
