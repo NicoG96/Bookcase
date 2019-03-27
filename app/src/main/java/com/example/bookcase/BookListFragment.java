@@ -1,7 +1,6 @@
 package com.example.bookcase;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,9 +11,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 public class BookListFragment extends Fragment {
-    //var to check if app has just been run
-    boolean notFirstRun = false;
-
     public BookListFragment() {}
     onBookSelectedListener callback;
 
@@ -31,7 +27,6 @@ public class BookListFragment extends Fragment {
             throw new ClassCastException(context.toString());
         }
     }
-
 
     @Override
     public void onDetach() {
