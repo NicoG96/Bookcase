@@ -1,5 +1,6 @@
 package com.example.bookcase;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         int orientation = getResources().getConfiguration().orientation;
 
         //if portrait, we need to implement a new activity with a fragment adapter
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT && !isTablet(this)) {
             //create intent to open the book details window
             Intent intent = new Intent(this, bookDetails.class);
 
@@ -30,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             startActivity(intent);
 
         //otherwise its a 2 panel screen and we can directly manipulate the fragment from there
-        } else {
+        } else if((orientation == Configuration.ORIENTATION_LANDSCAPE) || isTablet(this)){
             BookDetailsFragment bdf = (BookDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_details);
             assert bdf != null;
 
@@ -38,5 +39,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             TextView booktitle = findViewById(R.id.book_title);
             booktitle.setText(bdf.displayBook(position));
         }
+    }
+
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }
