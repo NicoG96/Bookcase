@@ -27,7 +27,6 @@ public class BookDetailsFragment extends Fragment {
         return rootView;
     }
 
-    /** NEEDS WORK */
     public String displayBook(int position) {
         String[] books = getResources().getStringArray(R.array.books);
         return books[position];
