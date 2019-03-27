@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
+    public int bookSelected;
 
     public FragmentCollectionAdapter(FragmentManager fm) {
         super(fm);
@@ -16,10 +17,9 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
         //create an instance of a detail fragment, along with its respective bundle
         BookDetailsFragment bdf = new BookDetailsFragment();
         Bundle bundle = new Bundle();
-        i++;
 
-        //send the index along with the bundle
-        bundle.putInt("index", i);
+        //send the index along with the bundle, accounting for array out of bounds exceptions
+        bundle.putInt("index", (bookSelected++) % 10);
         bdf.setArguments(bundle);
 
         //return the object of everything just created
