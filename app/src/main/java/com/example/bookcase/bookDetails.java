@@ -22,7 +22,7 @@ public class bookDetails extends FragmentActivity {
         //Instantiate a ViewPager from the xml item
         vPager = findViewById(R.id.pager);
 
-        vPager.setOffscreenPageLimit(2);
+        vPager.setOffscreenPageLimit(10);
 
         //instantiate a new page adapter (uses the fragment class to create objects for vPager)
         pAdapter = new FragmentCollectionAdapter(getSupportFragmentManager());
