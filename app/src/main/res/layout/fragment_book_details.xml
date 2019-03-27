@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="200dp"
-        android:text="testing"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 </FrameLayout>
