@@ -17,32 +17,33 @@ public class BookDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        int orientation = getResources().getConfiguration().orientation;
         Context ctx = getContext();
         assert ctx != null;
 
-        if (orientation == Configuration.ORIENTATION_PORTRAIT && !isTablet(ctx)) {
-            //get the textview object from xml
-            TextView bookName = rootView.findViewById(R.id.book_title);
-            assert getArguments() != null;
+        //get the textview object from xml
+        TextView bookName = rootView.findViewById(R.id.book_title);
+        assert getArguments() != null;
 
-            //find the book referenced
+        //TRY to get a passed index if there is one
+        try {
             int index = getArguments().getInt("index");
 
-            //set the textview to the name of that book
-            bookName.setText(displayBook(index));
+            //if there is, then set the textview to the name of that book
+            bookName.setText(displayBookInfo(index));
+
+        //if there isn't, then this is a 2-panel device instantiating this fragment for first time,
+        //so we can just return the inflated view as is
+        } catch(Exception e) {
+            return rootView;
         }
+
+
+        //otherwise its landscape or tablet
         return rootView;
     }
 
-    public String displayBook(int position) {
+    public String displayBookInfo(int position) {
         String[] books = getResources().getStringArray(R.array.books);
         return books[position];
-    }
-
-    public static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 }
