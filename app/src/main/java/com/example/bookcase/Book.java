@@ -14,4 +14,13 @@ public class Book {
         this.published = published;
         this.coverURL = coverURL;
     }
+
+    @Override
+    public String toString() {
+        return "Book ID:\t" + id + "\n" +
+                "Title:\t" + title + "\n" +
+                "Author:\t" + author + "\n" +
+                "Published:\t" + published + "\n" +
+                "coverURL:\t" + coverURL + "\n";
+    }
 }
