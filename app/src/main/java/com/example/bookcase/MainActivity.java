@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         //get the orientation of the device before doing anything
         int orientation = getResources().getConfiguration().orientation;
 
-        //if portrait, we need to implement a new activity with a fragment adapter
+        //if device is portrait and not a tablet, we need to implement a new activity with a fragment adapter
         if (orientation == Configuration.ORIENTATION_PORTRAIT && !isTablet(this)) {
             //create intent to open the book details window
             Intent intent = new Intent(this, bookDetails.class);
@@ -30,14 +30,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
             startActivity(intent);
 
-        //otherwise its a 2 panel screen and we can directly manipulate the fragment from there
+        //otherwise its a 2 panel screen and we can directly manipulate the fragment from this activity
         } else if((orientation == Configuration.ORIENTATION_LANDSCAPE) || isTablet(this)){
             BookDetailsFragment bdf = (BookDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_details);
             assert bdf != null;
 
             //get the textview for the booktitle from the xml and set the name according to what was clicked
             TextView booktitle = findViewById(R.id.book_title);
-            booktitle.setText(bdf.displayBook(position));
+            booktitle.setText(bdf.displayBookInfo(position));
         }
     }
 
