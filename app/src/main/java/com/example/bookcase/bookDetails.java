@@ -1,13 +1,10 @@
 package com.example.bookcase;
 
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
 public class bookDetails extends FragmentActivity {
-    //set up class vars
     private ViewPager vPager;
     private FragmentCollectionAdapter pAdapter;
 
@@ -16,24 +13,22 @@ public class bookDetails extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.pager);
 
-        //get the intent from the click
-        Intent intent = getIntent();
+        //get the book index from the intent
+        int index = getIntent().getIntExtra("book", 0);
 
         //Instantiate a ViewPager from the xml item
         vPager = findViewById(R.id.pager);
 
+        //set scroll memory limit
         vPager.setOffscreenPageLimit(10);
 
         //instantiate a new page adapter (uses the fragment class to create objects for vPager)
         pAdapter = new FragmentCollectionAdapter(getSupportFragmentManager());
 
-        //get the intent
-        int index = intent.getIntExtra("book", 0);
-
-        //send the book array index to the adapter
+        //tell the adapter what book was selected
         pAdapter.setBookSelected(index);
 
-        //set the pager to use this adapter containing the pages
+        //set the pager to use this adapter now containing the book the user selected
         vPager.setAdapter(pAdapter);
     }
 }
