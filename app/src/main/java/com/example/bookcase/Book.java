@@ -7,14 +7,6 @@ public class Book {
     private int published;
     private String coverURL;
 
-    public Book(int id, String title, String author, int published, String coverURL) {
-        this.id = id;
-        this.title = title;
-        this.author = author;
-        this.published = published;
-        this.coverURL = coverURL;
-    }
-
     public Book() {}
 
     public void setAuthor(String author) {
@@ -39,6 +31,10 @@ public class Book {
 
     @Override
     public String toString() {
+        return title;
+    }
+
+    public String toStringFull() {
         return "Book ID:\t" + id + "\n" +
                 "Title:\t" + title + "\n" +
                 "Author:\t" + author + "\n" +
