@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import static com.example.bookcase.MainActivity.library;
+
 public class BookListFragment extends Fragment {
     public BookListFragment() {}
     onBookSelectedListener callback;
@@ -46,7 +48,7 @@ public class BookListFragment extends Fragment {
         ListView booklist = v.findViewById(R.id.book_list);
 
         //create the adapter that will display the books
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(ctx, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.books));
+        ArrayAdapter<Book> adapter = new ArrayAdapter<>(ctx, android.R.layout.simple_list_item_1, library);
 
         //load that adapter into the listview
         booklist.setAdapter(adapter);
