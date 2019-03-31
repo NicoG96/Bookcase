@@ -1,9 +1,11 @@
 package com.example.bookcase;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.PagerAdapter;
 
 public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
     private int bookSelected;
@@ -33,5 +35,10 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
 
     public void setBookSelected(int bookSelected) {
         this.bookSelected = bookSelected;
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return PagerAdapter.POSITION_NONE;
     }
 }
