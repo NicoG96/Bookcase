@@ -13,31 +13,30 @@
         android:name="com.example.bookcase.BookListFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar"
         tools:layout="@layout/fragment_book_list" />
 
     <Button
-        android:id="@+id/button"
-        android:layout_width="77dp"
-        android:layout_height="40dp"
+        android:id="@+id/search_button"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/search_button"
+        android:layout_marginEnd="16dp"
+        android:text="@string/button_text"
         app:layout_constraintBottom_toTopOf="@+id/fragment_book_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.917"
-        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintHorizontal_bias="0.887"
+        app:layout_constraintStart_toEndOf="@+id/fragment_book_list"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
@@ -46,6 +45,9 @@
         android:ems="10"
         android:hint="@string/search_text"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_book_list"
+        app:layout_constraintEnd_toStartOf="@+id/search_button"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
