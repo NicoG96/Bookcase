@@ -29,6 +29,26 @@ public class Book {
         this.title = title;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public int getPublished() {
+        return published;
+    }
+
+    public String getCoverURL() {
+        return coverURL;
+    }
+
     @Override
     public String toString() {
         return title;
