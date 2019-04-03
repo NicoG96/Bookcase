@@ -1,15 +1,20 @@
 package com.example.bookcase;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import static com.example.bookcase.MainActivity.library;
 
 public class BookDetailsFragment extends Fragment {
+    TextView title;
+    TextView author;
+    TextView published;
+    ImageView cover;
 
     public BookDetailsFragment() { }
 
@@ -20,30 +25,32 @@ public class BookDetailsFragment extends Fragment {
         Context ctx = getContext();
         assert ctx != null;
 
-        //get the textview object from xml
-        TextView bookName = rootView.findViewById(R.id.book_title);
-        assert getArguments() != null;
+        //get the textview objects from the xml file
+        title = rootView.findViewById(R.id.book_title_tv);
+        author = rootView.findViewById(R.id.author_tv);
+        published = rootView.findViewById(R.id.published_tv);
+        cover = rootView.findViewById(R.id.cover_iv);
 
         //TRY to get a passed index if there is one
         try {
             int index = getArguments().getInt("index");
 
-            //if there is, then set the textview to the name of that book
-            bookName.setText(displayBookInfo(index));
+            //if there is, then display the fields of the book
+            displayBookInfo(index);
 
         //if there isn't, then this is a 2-panel device instantiating this fragment for first time,
         //so we can just return the inflated view as is
-        } catch(Exception e) {
+        } catch(NullPointerException e) {
             return rootView;
         }
 
-
-        //otherwise its landscape or tablet
         return rootView;
     }
 
-    public String displayBookInfo(int position) {
-        String[] books = getResources().getStringArray(R.array.books);
-        return books[position];
+    public void displayBookInfo(int position) {
+        title.setText(library.get(position).getTitle());
+        author.setText(library.get(position).getAuthor());
+        //published.setText(Integer.toString(library.get(position).getPublished()));
+        //cover.setText(library.get(position).getCoverURL());
     }
 }
