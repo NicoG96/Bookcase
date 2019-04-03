@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
+import static com.example.bookcase.MainActivity.library;
+
 public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
     private int bookSelected;
 
@@ -21,7 +23,7 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
         Bundle bundle = new Bundle();
 
         //send the index along with the bundle, accounting for array out of bounds exceptions
-        bundle.putInt("index", (bookSelected++) % 10);
+        bundle.putInt("index", (bookSelected++) % library.size());
         bdf.setArguments(bundle);
 
         //return the object of everything just created
