@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
+import static com.example.bookcase.MainActivity.library;
+
 public class bookDetails extends FragmentActivity {
     private ViewPager vPager;
     private FragmentCollectionAdapter pAdapter;
@@ -20,7 +22,7 @@ public class bookDetails extends FragmentActivity {
         vPager = findViewById(R.id.pager);
 
         //set scroll memory limit
-        vPager.setOffscreenPageLimit(10);
+        vPager.setOffscreenPageLimit(library.size());
 
         //instantiate a new page adapter (uses the fragment class to create objects for vPager)
         pAdapter = new FragmentCollectionAdapter(getSupportFragmentManager());
