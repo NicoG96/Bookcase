@@ -32,13 +32,13 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 25;
+        return library.size();
     }
 
     public void setBookSelected(int bookSelected) {
         this.bookSelected = bookSelected;
     }
-
+    
     @Override
     public int getItemPosition(@NonNull Object object) {
         return PagerAdapter.POSITION_NONE;
