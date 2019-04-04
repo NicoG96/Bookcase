@@ -68,22 +68,24 @@ public class BookDetailsFragment extends Fragment {
             this.bmImage = bmImage;
         }
 
+        @Override
         protected Bitmap doInBackground(String... urls) {
             String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
+            Bitmap image = null;
 
             try {
                 InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
+                image = BitmapFactory.decodeStream(in);
             } catch (Exception e) {
                 Log.e("Error", e.getMessage());
                 e.printStackTrace();
             }
-            return mIcon11;
+            return image;
         }
 
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
+        @Override
+        protected void onPostExecute(Bitmap image) {
+            bmImage.setImageBitmap(image);
         }
     }
 }
