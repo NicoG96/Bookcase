@@ -70,7 +70,7 @@ public class BookListFragment extends Fragment {
         return v;
     }
 
-    public void getBooks(final String site) {
+    public void getBooks(String site) {
         new getBookListTask(booklist, adapter).execute(site);
     }
 
@@ -141,10 +141,7 @@ public class BookListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void params) {
-            //add the new library to the array
-            ad.addAll(library);
-
-            //display that new library in the list
+            //reset the listview adapter to reflect changes
             booklist.setAdapter(ad);
         }
     }
