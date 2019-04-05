@@ -57,7 +57,7 @@ public class BookListFragment extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, library);
 
         //start background task to populate list view
-        new getBookListTask(booklist, adapter).execute("https://kamorris.com/lab/audlib/booksearch.php");
+        getBooks("https://kamorris.com/lab/audlib/booksearch.php");
 
         //create listener for each book
         booklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,64 +71,10 @@ public class BookListFragment extends Fragment {
     }
 
     public void getBooks(final String site) {
-        //thread to parse JSON data from website
-        Thread t = new Thread(){
-            @Override
-            public void run(){
-                URL resource;
-
-                try {
-                    resource = new URL(site);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(resource.openStream()));
-
-                    //variables to hold the website content
-                    StringBuilder response = new StringBuilder();
-                    String tmpResponse;
-
-                    tmpResponse = reader.readLine();
-
-                    //keep reading until end of page
-                    while (tmpResponse != null) {
-                        response.append(tmpResponse);
-                        tmpResponse = reader.readLine();
-                    }
-
-                    //create a JSON array object from this data
-                    JSONArray arr = new JSONArray(response.toString());
-
-                    //getBooks() called for booklist update, so we have to clear old library
-                    if(!library.isEmpty()) {
-                        library.clear();
-                    }
-
-                    //now transfer the members of this array into an array of book objects
-                    for(int i = 0; i < arr.length(); i++) {
-                        //make new book
-                        final Book book = new Book();
-
-                        //get the book from the JSON array
-                        JSONObject jBook = arr.getJSONObject(i);
-
-                        //get the values from that book and load them into the Book object
-                        book.setId(jBook.getInt("book_id"));
-                        book.setAuthor(jBook.getString("author"));
-                        book.setPublished(jBook.getInt("published"));
-                        book.setTitle(jBook.getString("title"));
-                        book.setCoverURL(jBook.getString("cover_url"));
-
-                        //then finally add that book to the library array
-                        library.add(book);
-                    }
-
-                } catch (Exception e){
-                    Log.e("JSONException", "Error: " + e.toString());
-                }
-            }
-        };
-        t.start();
+        new getBookListTask(booklist, adapter).execute(site);
     }
 
-    private static class getBookListTask extends AsyncTask<String, Void, Void> {
+    protected static class getBookListTask extends AsyncTask<String, Void, Void> {
         ListView booklist;
         ArrayAdapter<Book> ad;
 
