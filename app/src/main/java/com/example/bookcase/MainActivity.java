@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
         assert blf != null;
 
-        //populate the list from link below
-        blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
-
         //make a search button object
         button = findViewById(R.id.search_button);
 
@@ -39,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(search.getText().toString().equals("")) {
-                    blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
+                    //blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
                     Toast toast = Toast.makeText(getApplicationContext(),"Please enter a search query", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
                     String query = search.getText().toString();
-                    blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
+                    //blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
                 }
             }
         });
