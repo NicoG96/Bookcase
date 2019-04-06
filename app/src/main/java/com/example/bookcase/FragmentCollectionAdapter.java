@@ -38,7 +38,7 @@ public class FragmentCollectionAdapter extends FragmentStatePagerAdapter {
     public void setBookSelected(int bookSelected) {
         this.bookSelected = bookSelected;
     }
-    
+
     @Override
     public int getItemPosition(@NonNull Object object) {
         return PagerAdapter.POSITION_NONE;
