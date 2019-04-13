@@ -32,14 +32,35 @@ public class BookDetailsFragment extends Fragment {
     ImageButton stop_btn;
     SeekBar seeker;
 
-    public BookDetailsFragment() {}
+    public BookDetailsFragment() {
+    }
+
     onAudioActionListener callback;
 
     public interface onAudioActionListener {
         void playBook(int book_id);
+
         void pauseBook();
+
         void stopBook();
+
         void setProgress(int position);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            callback = (onAudioActionListener) context;
+        } catch(ClassCastException e) {
+            throw new ClassCastException("Class cast exception " + e.toString());
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        callback = null;
+        super.onDetach();
     }
 
     @Override
@@ -68,8 +89,6 @@ public class BookDetailsFragment extends Fragment {
             //if there is, then display the fields of the book
             displayBookInfo(index);
 
-            curr_book = index;
-
         /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
         so we can just return the inflated view as is */
         } catch(NullPointerException e) {}
@@ -78,21 +97,21 @@ public class BookDetailsFragment extends Fragment {
         play_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //callback.playBook(1);
+                callback.playBook(curr_book);
             }
         });
 
         pause_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //callback.pauseBook();
+                callback.pauseBook();
             }
         });
 
         stop_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //callback.stopBook();
+                callback.stopBook();
             }
         });
 
@@ -117,6 +136,7 @@ public class BookDetailsFragment extends Fragment {
     }
 
     public void displayBookInfo(int position) {
+        this.curr_book = library.get(position).getId();
         title.setText(library.get(position).getTitle());
         author.setText(library.get(position).getAuthor());
         published.setText(Integer.toString(library.get(position).getPublished()));
