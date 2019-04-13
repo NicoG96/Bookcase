@@ -1,8 +1,11 @@
 package com.example.bookcase;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +14,44 @@ import android.widget.EditText;
 import android.widget.Toast;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.onBookSelectedListener {
+import edu.temple.audiobookplayer.AudiobookService;
+
+public class MainActivity extends AppCompatActivity implements BookListFragment.onBookSelectedListener, BookDetailsFragment.onAudioActionListener {
     final static ArrayList<Book> library = new ArrayList<>();
     BookDetailsFragment bdf;
     BookListFragment blf;
     EditText search;
     Button button;
+
+    boolean connected;
+    AudiobookService.MediaControlBinder binder;
+
+    //create service connection
+    ServiceConnection sc = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (AudiobookService.MediaControlBinder) service;
+            connected = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            connected = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent audioIntent = new Intent(this, AudiobookService.class);
+        bindService(audioIntent, sc, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unbindService(sc);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +106,17 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             bdf.displayBookInfo(position);
         }
     }
+
+    @Override
+    public void playBook(int book_id){
+
+    }
+
+    @Override
+    public void pauseBook(){}
+
+    @Override
+    public void stopBook(){}
 
     public static boolean isTablet(Context context) {
         return (context.getResources().getConfiguration().screenLayout
