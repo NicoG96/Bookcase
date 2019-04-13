@@ -6,6 +6,7 @@ public class Book {
     private String author;
     private int published;
     private String coverURL;
+    private int duration;
 
     public Book() {}
 
@@ -47,6 +48,14 @@ public class Book {
 
     public String getCoverURL() {
         return coverURL;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     @Override
