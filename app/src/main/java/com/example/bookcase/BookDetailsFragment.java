@@ -10,26 +10,43 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
-
 import java.io.InputStream;
-
 import static com.example.bookcase.MainActivity.library;
 
 public class BookDetailsFragment extends Fragment {
+    int curr_book;
+
+    //book details
     TextView title;
     TextView author;
     TextView published;
     ImageView cover;
 
-    public BookDetailsFragment() { }
+    //audio controls
+    ImageButton play_btn;
+    ImageButton pause_btn;
+    ImageButton stop_btn;
+    SeekBar seeker;
+
+    public BookDetailsFragment() {}
+    onAudioActionListener callback;
+
+    public interface onAudioActionListener {
+        void playBook(int book_id);
+        void pauseBook();
+        void stopBook();
+        void setProgress(int position);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_book_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_book_details, container, false);
 
-        Context ctx = getContext();
+        final Context ctx = getContext();
         assert ctx != null;
 
         //get the textview objects from the xml file
@@ -38,6 +55,12 @@ public class BookDetailsFragment extends Fragment {
         published = rootView.findViewById(R.id.published_tv);
         cover = rootView.findViewById(R.id.cover_iv);
 
+        //get the audio objects
+        play_btn = rootView.findViewById(R.id.play_btn);
+        pause_btn = rootView.findViewById(R.id.pause_btn);
+        stop_btn = rootView.findViewById(R.id.stop_btn);
+        seeker = rootView.findViewById(R.id.seeker);
+
         //TRY to get a passed index if there is one
         try {
             int index = getArguments().getInt("index");
@@ -45,11 +68,50 @@ public class BookDetailsFragment extends Fragment {
             //if there is, then display the fields of the book
             displayBookInfo(index);
 
+            curr_book = index;
+
         /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
         so we can just return the inflated view as is */
-        } catch(NullPointerException e) {
-            return rootView;
-        }
+        } catch(NullPointerException e) {}
+
+        //create click listeners
+        play_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //callback.playBook(1);
+            }
+        });
+
+        pause_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //callback.pauseBook();
+            }
+        });
+
+        stop_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //callback.stopBook();
+            }
+        });
+
+        seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         return rootView;
     }
