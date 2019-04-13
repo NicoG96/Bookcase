@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void playBook(int book_id){
-        System.out.println(book_id);
         binder.play(book_id);
     }
 
@@ -121,6 +120,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     public void stopBook(){
         binder.stop();
+    }
+
+    @Override
+    public void setprogress(int position) {
+        binder.seekTo(position);
     }
 
     public static boolean isTablet(Context context) {

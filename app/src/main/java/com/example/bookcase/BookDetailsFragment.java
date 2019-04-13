@@ -1,5 +1,6 @@
 package com.example.bookcase;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -39,22 +40,29 @@ public class BookDetailsFragment extends Fragment {
 
     public interface onAudioActionListener {
         void playBook(int book_id);
-
         void pauseBook();
-
         void stopBook();
-
-        void setProgress(int position);
+        void setprogress(int position);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        try {
+
+        Activity activity;
+        if (context instanceof onAudioActionListener) {
             callback = (onAudioActionListener) context;
-        } catch(ClassCastException e) {
-            throw new ClassCastException("Class cast exception " + e.toString());
+        } else {
+            activity = null;
         }
+
+        /*
+        try {
+            callback = (onAudioActionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException("ClassCastException " + e);
+        }
+*/
     }
 
     @Override
@@ -118,7 +126,7 @@ public class BookDetailsFragment extends Fragment {
         seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
+                callback.setprogress(progress);
             }
 
             @Override
