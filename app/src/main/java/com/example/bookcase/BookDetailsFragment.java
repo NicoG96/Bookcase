@@ -1,6 +1,5 @@
 package com.example.bookcase;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +18,7 @@ import java.io.InputStream;
 import static com.example.bookcase.MainActivity.library;
 
 public class BookDetailsFragment extends Fragment {
-    int curr_book;
+    Book book;
 
     //book details
     TextView title;
@@ -33,8 +32,7 @@ public class BookDetailsFragment extends Fragment {
     ImageButton stop_btn;
     SeekBar seeker;
 
-    public BookDetailsFragment() {
-    }
+    public BookDetailsFragment() {}
 
     onAudioActionListener callback;
 
@@ -48,21 +46,11 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
-        Activity activity;
-        if (context instanceof onAudioActionListener) {
-            callback = (onAudioActionListener) context;
-        } else {
-            activity = null;
-        }
-
-        /*
         try {
-            callback = (onAudioActionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException("ClassCastException " + e);
+            callback = (onAudioActionListener) context;
+        } catch(ClassCastException e) {
+            throw new ClassCastException(context.toString());
         }
-*/
     }
 
     @Override
@@ -105,7 +93,7 @@ public class BookDetailsFragment extends Fragment {
         play_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.playBook(curr_book);
+                callback.playBook(book.getId());
             }
         });
 
@@ -144,7 +132,7 @@ public class BookDetailsFragment extends Fragment {
     }
 
     public void displayBookInfo(int position) {
-        this.curr_book = library.get(position).getId();
+        this.book = library.get(position);
         title.setText(library.get(position).getTitle());
         author.setText(library.get(position).getAuthor());
         published.setText(Integer.toString(library.get(position).getPublished()));

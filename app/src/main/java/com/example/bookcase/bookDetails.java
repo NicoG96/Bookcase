@@ -3,10 +3,10 @@ package com.example.bookcase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-
+import static com.example.bookcase.MainActivity.audiobook;
 import static com.example.bookcase.MainActivity.library;
 
-public class bookDetails extends FragmentActivity {
+public class bookDetails extends FragmentActivity implements BookDetailsFragment.onAudioActionListener{
     private ViewPager vPager;
     private FragmentCollectionAdapter pAdapter;
 
@@ -32,5 +32,25 @@ public class bookDetails extends FragmentActivity {
 
         //set the pager to use this adapter now containing the book the user selected
         vPager.setAdapter(pAdapter);
+    }
+
+    @Override
+    public void playBook(int book_id){
+        audiobook.play(book_id);
+    }
+
+    @Override
+    public void pauseBook(){
+        audiobook.pause();
+    }
+
+    @Override
+    public void stopBook(){
+        audiobook.stop();
+    }
+
+    @Override
+    public void setprogress(int position) {
+        audiobook.seekTo(position);
     }
 }

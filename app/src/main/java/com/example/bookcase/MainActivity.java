@@ -24,13 +24,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     Button button;
 
     boolean connected;
-    AudiobookService.MediaControlBinder binder;
+    static AudiobookService.MediaControlBinder audiobook;
 
     //create service connection
     ServiceConnection sc = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = (AudiobookService.MediaControlBinder) service;
+            audiobook = (AudiobookService.MediaControlBinder) service;
             connected = true;
         }
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     protected void onStop() {
         super.onStop();
-        unbindService(sc);
+        //unbindService(sc);
     }
 
     @Override
@@ -109,22 +109,22 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void playBook(int book_id){
-        binder.play(book_id);
+        audiobook.play(book_id);
     }
 
     @Override
     public void pauseBook(){
-        binder.pause();
+        audiobook.pause();
     }
 
     @Override
     public void stopBook(){
-        binder.stop();
+        audiobook.stop();
     }
 
     @Override
     public void setprogress(int position) {
-        binder.seekTo(position);
+        audiobook.seekTo(position);
     }
 
     public static boolean isTablet(Context context) {
