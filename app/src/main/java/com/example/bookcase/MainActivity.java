@@ -104,6 +104,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
             //now set the fields
             bdf.displayBookInfo(position);
+            bdf.play_btn.setVisibility(View.VISIBLE);
+            bdf.pause_btn.setVisibility(View.VISIBLE);
+            bdf.stop_btn.setVisibility(View.VISIBLE);
+            bdf.seeker.setVisibility(View.VISIBLE);
+
         }
     }
 

@@ -62,28 +62,32 @@
             android:id="@+id/play_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@android:drawable/ic_media_play"
-            android:layout_weight="1"/>
+            android:visibility="invisible" />
 
         <ImageButton
             android:id="@+id/pause_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@android:drawable/ic_media_pause"
-            android:layout_weight="1"/>
+            android:visibility="invisible" />
 
         <ImageButton
             android:id="@+id/stop_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:layout_weight="1"/>
+            android:visibility="invisible" />
 
     </LinearLayout>
 
     <SeekBar
         android:id="@+id/seeker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
 
 </LinearLayout>

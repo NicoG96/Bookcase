@@ -137,6 +137,10 @@ public class BookDetailsFragment extends Fragment {
         author.setText(library.get(position).getAuthor());
         published.setText(Integer.toString(library.get(position).getPublished()));
         new downloadImgTask(cover).execute(library.get(position).getCoverURL());
+        play_btn.setVisibility(View.VISIBLE);
+        pause_btn.setVisibility(View.VISIBLE);
+        stop_btn.setVisibility(View.VISIBLE);
+        seeker.setVisibility(View.VISIBLE);
     }
 
     private static class downloadImgTask extends AsyncTask<String, Void, Bitmap> {
