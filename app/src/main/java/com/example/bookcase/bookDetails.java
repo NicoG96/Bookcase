@@ -50,7 +50,9 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void setprogress(int position) {
-        audiobook.seekTo(position);
+    public void setprogress(int position, boolean fromUser) {
+        if(fromUser) {
+            audiobook.seekTo(position);
+        }
     }
 }

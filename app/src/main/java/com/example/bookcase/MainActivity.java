@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import java.util.ArrayList;
-
 import edu.temple.audiobookplayer.AudiobookService;
 
 public class MainActivity extends AppCompatActivity implements BookListFragment.onBookSelectedListener, BookDetailsFragment.onAudioActionListener {
@@ -21,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     BookDetailsFragment bdf;
     BookListFragment blf;
     EditText search;
-    Button button;
+    Button search_button;
 
     boolean connected;
     static AudiobookService.MediaControlBinder audiobook;
@@ -62,13 +61,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
         assert blf != null;
 
-        //make a search button object
-        button = findViewById(R.id.search_button);
+        //make a search search_button object
+        search_button = findViewById(R.id.search_button);
 
         //make a search text object
         search = findViewById(R.id.search_bar);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        search_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if(search.getText().toString().equals("")) {
                     blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
@@ -102,13 +101,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             bdf = (BookDetailsFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_details);
             assert bdf != null;
 
-            //now set the fields
+            //now display the book info on the screen
             bdf.displayBookInfo(position);
+
+            //and display the audio controls
             bdf.play_btn.setVisibility(View.VISIBLE);
             bdf.pause_btn.setVisibility(View.VISIBLE);
             bdf.stop_btn.setVisibility(View.VISIBLE);
             bdf.seeker.setVisibility(View.VISIBLE);
-
         }
     }
 
@@ -128,8 +128,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void setprogress(int position) {
-        audiobook.seekTo(position);
+    public void setprogress(int position, boolean fromUser) {
+        if(fromUser) {
+            audiobook.seekTo(position);
+        }
     }
 
     public static boolean isTablet(Context context) {

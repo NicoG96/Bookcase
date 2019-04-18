@@ -40,7 +40,7 @@ public class BookDetailsFragment extends Fragment {
         void playBook(int book_id);
         void pauseBook();
         void stopBook();
-        void setprogress(int position);
+        void setprogress(int position, boolean fromUser);
     }
 
     @Override
@@ -94,6 +94,8 @@ public class BookDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 callback.playBook(book.getId());
+                seeker.setMax(book.getDuration());
+                new updateSeeker(seeker).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
@@ -114,7 +116,7 @@ public class BookDetailsFragment extends Fragment {
         seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                callback.setprogress(progress);
+                callback.setprogress(progress, fromUser);
             }
 
             @Override
@@ -136,7 +138,9 @@ public class BookDetailsFragment extends Fragment {
         title.setText(library.get(position).getTitle());
         author.setText(library.get(position).getAuthor());
         published.setText(Integer.toString(library.get(position).getPublished()));
-        new downloadImgTask(cover).execute(library.get(position).getCoverURL());
+        new downloadImgTask(cover).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, library.get(position).getCoverURL());
+
+        //display audio controls
         play_btn.setVisibility(View.VISIBLE);
         pause_btn.setVisibility(View.VISIBLE);
         stop_btn.setVisibility(View.VISIBLE);
@@ -168,6 +172,36 @@ public class BookDetailsFragment extends Fragment {
         @Override
         protected void onPostExecute(Bitmap image) {
             bmImage.setImageBitmap(image);
+        }
+    }
+
+    private static class updateSeeker extends AsyncTask<Void, Integer, Void> {
+        SeekBar seeker;
+
+        public updateSeeker(SeekBar seeker) {
+            this.seeker = seeker;
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            for(int i = 0; i < seeker.getMax(); i++) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                publishProgress(i);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... progress) {
+            seeker.setProgress(progress[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
         }
     }
 }

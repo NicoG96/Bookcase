@@ -129,6 +129,7 @@ public class BookListFragment extends Fragment {
                     book.setPublished(jBook.getInt("published"));
                     book.setTitle(jBook.getString("title"));
                     book.setCoverURL(jBook.getString("cover_url"));
+                    book.setDuration(jBook.getInt("duration"));
 
                     //then finally add that book to the library array
                     library.add(book);
