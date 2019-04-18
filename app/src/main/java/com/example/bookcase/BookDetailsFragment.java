@@ -110,6 +110,7 @@ public class BookDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 callback.stopBook();
+                seeker.setProgress(0);
             }
         });
 
