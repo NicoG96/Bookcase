@@ -32,6 +32,9 @@ public class BookDetailsFragment extends Fragment {
     ImageButton stop_btn;
     SeekBar seeker;
 
+    //delete/bownload button
+
+
     public BookDetailsFragment() {}
 
     onAudioActionListener callback;

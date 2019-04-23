@@ -2,6 +2,8 @@
     <string name="app_name">Bookcase</string>
     <string name="button_text">Go</string>
     <string name="search_text">Search</string>
+    <string name="download_txt">Download</string>
+    <string name="delete_txt">Delete</string>
 
     <string-array name="books">
         <item>The Count of Monte Cristo</item>
