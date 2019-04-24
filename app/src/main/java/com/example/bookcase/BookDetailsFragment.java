@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -32,8 +33,8 @@ public class BookDetailsFragment extends Fragment {
     ImageButton stop_btn;
     SeekBar seeker;
 
-    //delete/bownload button
-
+    //delete/download button
+    Button dl_btn;
 
     public BookDetailsFragment() {}
 
@@ -81,6 +82,9 @@ public class BookDetailsFragment extends Fragment {
         stop_btn = rootView.findViewById(R.id.stop_btn);
         seeker = rootView.findViewById(R.id.seeker);
 
+        //get download/delete button
+        dl_btn = rootView.findViewById(R.id.download_btn);
+
         //TRY to get a passed index if there is one
         try {
             int index = getArguments().getInt("index");
@@ -99,6 +103,25 @@ public class BookDetailsFragment extends Fragment {
                 callback.playBook(book.getId());
                 seeker.setMax(book.getDuration());
                 new updateSeeker(seeker).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        dl_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View V) {
+                // check the button value
+                if(dl_btn.getText().toString().equals("Download")) {
+                    String query = "https://kamorris.com/lab/audlib/download.php?id=" + Integer.toString(book.getId());
+
+                    //update button text to communicate to the user that the audiobook has downloaded
+                    dl_btn.setText(R.string.delete_txt);
+
+                //otherwise it's a delete button
+                } else {
+
+                    //update button text to communicate to the user that the audiobook has been deleted
+                    dl_btn.setText(R.string.download_txt);
+                }
             }
         });
 
@@ -149,6 +172,9 @@ public class BookDetailsFragment extends Fragment {
         pause_btn.setVisibility(View.VISIBLE);
         stop_btn.setVisibility(View.VISIBLE);
         seeker.setVisibility(View.VISIBLE);
+
+        //check if the book has been downloaded before, change display text if so
+        dl_btn.setVisibility(View.VISIBLE);
     }
 
     private static class downloadImgTask extends AsyncTask<String, Void, Bitmap> {
