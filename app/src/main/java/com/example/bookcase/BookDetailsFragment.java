@@ -18,6 +18,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -140,7 +142,7 @@ public class BookDetailsFragment extends Fragment {
                     String query = "https://kamorris.com/lab/audlib/download.php?id=" + Integer.toString(book.getId());
 
                     //download in background
-                    new downloadBook(dl_progress, dl_btn).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
+                    new downloadBook(dl_progress, dl_btn, ctx).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
 
                 //otherwise it's a delete button
                 } else {
@@ -242,13 +244,16 @@ public class BookDetailsFragment extends Fragment {
         }
     }
 
-    private static class downloadBook extends AsyncTask<String, Integer, Void> {
+    private static class downloadBook extends AsyncTask<String, Integer, String> {
         SeekBar dl_progress;
         Button dl_btn;
+        Context ctx;
+        char id;
 
-        public downloadBook(SeekBar dl_progress, Button dl_btn) {
+        public downloadBook(SeekBar dl_progress, Button dl_btn, Context ctx) {
             this.dl_progress = dl_progress;
             this.dl_btn = dl_btn;
+            this.ctx = ctx;
         }
 
         @Override
@@ -260,7 +265,8 @@ public class BookDetailsFragment extends Fragment {
         }
 
         @Override
-        protected Void doInBackground(String... sUrl) {
+        protected String doInBackground(String... sUrl) {
+            id = sUrl[0].charAt(sUrl[0].length() - 1);
             InputStream input = null;
             OutputStream output = null;
             HttpURLConnection connection = null;
@@ -272,8 +278,8 @@ public class BookDetailsFragment extends Fragment {
                 // expect HTTP 200 OK, so we don't mistakenly save error report
                 // instead of the file
                 if(connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    System.out.println("Server returned HTTP " + connection.getResponseCode()
-                            + " " + connection.getResponseMessage());
+                    return "Server returned HTTP " + connection.getResponseCode()
+                            + " " + connection.getResponseMessage();
                 }
 
                 // this will be useful to display download percentage
@@ -282,7 +288,7 @@ public class BookDetailsFragment extends Fragment {
 
                 // download the file
                 input = connection.getInputStream();
-                output = new FileOutputStream("/sdcard/file_name.extension");
+                output = new FileOutputStream(ctx.getFilesDir().getPath() + "/" + id + ".mp3");
 
                 byte data[] = new byte[4096];
                 long total = 0;
@@ -300,7 +306,7 @@ public class BookDetailsFragment extends Fragment {
                     output.write(data, 0, count);
                 }
             } catch(Exception e) {
-                System.out.println(e.toString());
+                return e.toString();
             } finally {
                 try {
                     if(output != null)
@@ -316,21 +322,28 @@ public class BookDetailsFragment extends Fragment {
             return null;
         }
 
-
-
         @Override
         protected void onProgressUpdate(Integer... progress) {
             super.onProgressUpdate(progress);
+            dl_progress.setIndeterminate(false);
+            dl_progress.setMax(100);
             dl_progress.setProgress(progress[0]);
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(String result) {
             //hide the download bar since download is finished
             dl_progress.setVisibility(View.INVISIBLE);
 
-            //update button text to communicate to the user that the audiobook has downloaded
-            dl_btn.setText(R.string.delete_txt);
+            //check if file downloaded
+            if(result != null) {
+                Toast.makeText(ctx, "Download error: " + result, Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(ctx, "File downloaded", Toast.LENGTH_SHORT).show();
+                //update button text to communicate to the user that the audiobook has downloaded
+                dl_btn.setText(R.string.delete_txt);
+            }
         }
     }
 }
