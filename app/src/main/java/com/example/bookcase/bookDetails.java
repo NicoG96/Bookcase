@@ -4,6 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+
+import java.io.File;
+
 import static com.example.bookcase.MainActivity.audiobook;
 import static com.example.bookcase.MainActivity.library;
 
@@ -36,7 +39,12 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void playBook(int book_id){
+    public void playBook(File file){
+        audiobook.play(file);
+    }
+
+    @Override
+    public void streamBook(int book_id){
         audiobook.play(book_id);
     }
 

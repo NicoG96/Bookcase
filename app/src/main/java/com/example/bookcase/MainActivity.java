@@ -13,6 +13,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.io.File;
 import java.util.ArrayList;
 import edu.temple.audiobookplayer.AudiobookService;
 
@@ -94,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
             //send chosen book along with intent
             intent.putExtra("book", position);
-
             startActivity(intent);
 
         //otherwise its a 2 panel screen and we can directly manipulate the fragment from this activity
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             assert bdf != null;
 
             //now display the book info on the screen
-            bdf.displayBookInfo(position);
+            bdf.displayBookInfo(position, getApplicationContext());
 
             //and display the audio controls
             bdf.play_btn.setVisibility(View.VISIBLE);
@@ -114,7 +115,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void playBook(int book_id){
+    public void playBook(File file){
+        audiobook.play(file);
+    }
+
+    @Override
+    public void streamBook(int book_id){
         audiobook.play(book_id);
     }
 
