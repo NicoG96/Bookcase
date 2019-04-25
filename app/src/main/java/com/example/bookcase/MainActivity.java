@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -128,10 +129,15 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void setprogress(int position, boolean fromUser) {
+    public void setProgress(int position, boolean fromUser) {
         if(fromUser) {
             audiobook.seekTo(position);
         }
+    }
+
+    @Override
+    public void setProgHand(Handler handler) {
+        audiobook.setProgressHandler(handler);
     }
 
     public static boolean isTablet(Context context) {

@@ -1,6 +1,7 @@
 package com.example.bookcase;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import static com.example.bookcase.MainActivity.audiobook;
@@ -50,7 +51,12 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void setprogress(int position, boolean fromUser) {
+    public void setProgHand(Handler handler) {
+        audiobook.setProgressHandler(handler);
+    }
+
+    @Override
+    public void setProgress(int position, boolean fromUser) {
         if(fromUser) {
             audiobook.seekTo(position);
         }
