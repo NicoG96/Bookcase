@@ -20,6 +20,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +63,8 @@ public class BookDetailsFragment extends Fragment {
     };
 
     public interface onAudioActionListener {
-        void playBook(int book_id);
+        void playBook(File file);
+        void streamBook(int book_id);
         void pauseBook();
         void stopBook();
         void setProgHand(Handler handler);
@@ -113,7 +115,7 @@ public class BookDetailsFragment extends Fragment {
             int index = getArguments().getInt("index");
 
             //if there is, then display the fields of the book
-            displayBookInfo(index);
+            displayBookInfo(index, ctx);
 
         /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
         so we can just return the inflated view as is */
@@ -124,7 +126,20 @@ public class BookDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 seeker.setMax(book.getDuration());
-                callback.playBook(book.getId());
+
+                //check if the file exists on the device first
+                File file = new File(ctx.getFilesDir().getPath() + "/" + book.getId() + ".mp3");
+                if(file.exists()) {
+                    Toast.makeText(ctx, "Playing from device", Toast.LENGTH_LONG).show();
+                    callback.playBook(file);
+
+                //otherwise, just stream it
+                } else {
+                    Toast.makeText(ctx, "Streaming to device", Toast.LENGTH_LONG).show();
+                    callback.streamBook(book.getId());
+                }
+
+                //start updating the seekbar
                 seeker.post(new Runnable() {
                     @Override
                     public void run() {
@@ -137,17 +152,26 @@ public class BookDetailsFragment extends Fragment {
         dl_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View V) {
-                // check the button value
-                if(dl_btn.getText().toString().equals("Download")) {
+                // check if the file exists on the device already
+                File file = new File(ctx.getFilesDir().getPath() + "/" + book.getId() + ".mp3");
+
+                //if it doesn't...
+                if(!file.exists()) {
+                    //...then download the file
                     String query = "https://kamorris.com/lab/audlib/download.php?id=" + Integer.toString(book.getId());
 
-                    //download in background
+                    //and do it in background
                     new downloadBook(dl_progress, dl_btn, ctx).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
 
                 //otherwise it's a delete button
                 } else {
-                    //DELETION STUFFS
+                    boolean deleted = file.delete();
+                    if(!deleted) {
+                        Toast.makeText(ctx, "Error deleting file", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     //update button text to communicate to the user that the audiobook has been deleted
+                    Toast.makeText(ctx, "File deleted!", Toast.LENGTH_LONG).show();
                     dl_btn.setText(R.string.download_txt);
                 }
             }
@@ -199,7 +223,7 @@ public class BookDetailsFragment extends Fragment {
         return rootView;
     }
 
-    public void displayBookInfo(int position) {
+    public void displayBookInfo(int position, Context ctx) {
         this.book = library.get(position);
         title.setText(library.get(position).getTitle());
         author.setText(library.get(position).getAuthor());
@@ -212,8 +236,16 @@ public class BookDetailsFragment extends Fragment {
         stop_btn.setVisibility(View.VISIBLE);
         seeker.setVisibility(View.VISIBLE);
 
-        //check if the book has been downloaded before, change display text if so
         dl_btn.setVisibility(View.VISIBLE);
+
+        //check if the book has been downloaded before, change display text if so
+        File file = new File(ctx.getFilesDir().getPath() + "/" + book.getId() + ".mp3");
+
+        if(file.exists()) {
+            dl_btn.setText(R.string.delete_txt);
+        } else {
+            dl_btn.setText(R.string.download_txt);
+        }
     }
 
     private static class downloadImgTask extends AsyncTask<String, Void, Bitmap> {
