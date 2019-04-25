@@ -91,6 +91,12 @@
         android:visibility="invisible" />
 
     <SeekBar
+        android:id="@+id/dl_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+    <SeekBar
         android:id="@+id/seeker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
