@@ -1,5 +1,7 @@
 package com.example.bookcase;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
@@ -14,6 +16,9 @@ import static com.example.bookcase.MainActivity.library;
 public class bookDetails extends FragmentActivity implements BookDetailsFragment.onAudioActionListener{
     private ViewPager vPager;
     private FragmentCollectionAdapter pAdapter;
+    Book viewingBook;
+    Book playingBook;
+    int bookIndex;
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -26,7 +31,8 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
         setContentView(R.layout.pager);
 
         //get the book index from the intent
-        int index = getIntent().getIntExtra("book", 0);
+        bookIndex = getIntent().getIntExtra("book", 0);
+        viewingBook = library.get(bookIndex);
 
         //Instantiate a ViewPager from the xml item
         vPager = findViewById(R.id.pager);
@@ -38,29 +44,66 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
         pAdapter = new FragmentCollectionAdapter(getSupportFragmentManager());
 
         //tell the adapter what book was selected
-        pAdapter.setBookSelected(index);
+        pAdapter.setBookSelected(bookIndex);
 
         //set the pager to use this adapter now containing the book the user selected
         vPager.setAdapter(pAdapter);
     }
 
     @Override
-    public void playBook(File file){
+    public void playBook(File file, Book book){
+        if(playingBook == null) {
+            playingBook = viewingBook;
+        }
+
+        //save position of current audiobook if there's one playing
+        if(audiobook != null) {
+            saveInfo(playingBook.getTitle(), 100);
+        }
+
+        //check to see if this audiobook has been played before
+        int pos = getInfo(book.getTitle());
+
+        //start playing book
+        audiobook.seekTo(pos);
         audiobook.play(file);
+
+        //keep track of which book we're playing
+        this.playingBook = book;
     }
 
     @Override
-    public void streamBook(int book_id){
-        audiobook.play(book_id);
+    public void streamBook(Book book){
+        if(playingBook == null) {
+            playingBook = viewingBook;
+        }
+
+        //save position of current audiobook if there's one playing
+        if(audiobook != null) {
+            saveInfo(playingBook.getTitle(), 100);
+        }
+
+        //check to see if this audiobook has been played before
+        int pos = getInfo(book.getTitle());
+
+        audiobook.seekTo(pos);
+        audiobook.play(book.getId());
+
+        //keep track of which book we're playing
+        this.playingBook = book;
     }
 
     @Override
     public void pauseBook(){
+        if(audiobook != null) {
+            saveInfo(playingBook.getTitle(), 100);
+        }
         audiobook.pause();
     }
 
     @Override
     public void stopBook(){
+        saveInfo(playingBook.getTitle(), 0);
         audiobook.stop();
     }
 
@@ -76,5 +119,18 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
         if(fromUser && audiobook != null) {
             audiobook.seekTo(position);
         }
+    }
+
+    public void saveInfo(String book_name, int position) {
+        SharedPreferences sharedPref = getSharedPreferences("audioInfo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putInt(book_name, position);
+        editor.apply();
+    }
+
+    public int getInfo(String book_name) {
+        SharedPreferences sharedPref = getSharedPreferences("audioInfo", Context.MODE_PRIVATE);
+        return sharedPref.getInt(book_name, 0);
     }
 }

@@ -63,8 +63,8 @@ public class BookDetailsFragment extends Fragment {
     };
 
     public interface onAudioActionListener {
-        void playBook(File file);
-        void streamBook(int book_id);
+        void playBook(File file, Book book);
+        void streamBook(Book book);
         void pauseBook();
         void stopBook();
         void setProgHand(Handler handler);
@@ -131,12 +131,12 @@ public class BookDetailsFragment extends Fragment {
                 File file = new File(ctx.getFilesDir().getPath() + "/" + book.getId() + ".mp3");
                 if(file.exists()) {
                     Toast.makeText(ctx, "Playing from device", Toast.LENGTH_LONG).show();
-                    callback.playBook(file);
+                    callback.playBook(file, book);
 
                 //otherwise, just stream it
                 } else {
                     Toast.makeText(ctx, "Streaming to device", Toast.LENGTH_LONG).show();
-                    callback.streamBook(book.getId());
+                    callback.streamBook(book);
                 }
 
                 //start updating the seekbar
