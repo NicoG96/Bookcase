@@ -2,6 +2,7 @@ package com.example.bookcase;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 
@@ -13,6 +14,11 @@ import static com.example.bookcase.MainActivity.library;
 public class bookDetails extends FragmentActivity implements BookDetailsFragment.onAudioActionListener{
     private ViewPager vPager;
     private FragmentCollectionAdapter pAdapter;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +66,14 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
 
     @Override
     public void setProgHand(Handler handler) {
-        audiobook.setProgressHandler(handler);
+        if(audiobook != null) {
+            audiobook.setProgressHandler(handler);
+        }
     }
 
     @Override
     public void setProgress(int position, boolean fromUser) {
-        if(fromUser) {
+        if(fromUser && audiobook != null) {
             audiobook.seekTo(position);
         }
     }

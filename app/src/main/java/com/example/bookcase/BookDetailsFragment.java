@@ -143,7 +143,9 @@ public class BookDetailsFragment extends Fragment {
                 seeker.post(new Runnable() {
                     @Override
                     public void run() {
-                        callback.setProgHand(handler);
+                        if(callback != null) {
+                            callback.setProgHand(handler);
+                        }
                     }
                 });
             }
@@ -159,8 +161,6 @@ public class BookDetailsFragment extends Fragment {
                 if(!file.exists()) {
                     //...then download the file
                     String query = "https://kamorris.com/lab/audlib/download.php?id=" + Integer.toString(book.getId());
-
-                    //and do it in background
                     new downloadBook(dl_progress, dl_btn, ctx).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, query);
 
                 //otherwise it's a delete button
@@ -206,7 +206,9 @@ public class BookDetailsFragment extends Fragment {
         seeker.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                callback.setProgress(progress, fromUser);
+                if(callback != null) {
+                    callback.setProgress(progress, fromUser);
+                }
             }
 
             @Override
