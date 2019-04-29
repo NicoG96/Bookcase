@@ -49,6 +49,8 @@ public class BookDetailsFragment extends Fragment {
     Button dl_btn;
     SeekBar dl_progress;
 
+    static int progress;
+
     public BookDetailsFragment() {}
 
     onAudioActionListener callback;
@@ -58,14 +60,15 @@ public class BookDetailsFragment extends Fragment {
         @Override
         public void handleMessage(Message msg) {
             int pos = msg.what;
+            progress = pos;
             seeker.setProgress(pos);
         }
     };
 
     public interface onAudioActionListener {
-        void playBook(File file, Book book);
-        void streamBook(Book book);
-        void pauseBook();
+        void playBook(File file, Book book, int pos);
+        void streamBook(Book book, int pos);
+        void pauseBook(int pos);
         void stopBook();
         void setProgHand(Handler handler);
         void setProgress(int position, boolean fromUser);
@@ -131,12 +134,12 @@ public class BookDetailsFragment extends Fragment {
                 File file = new File(ctx.getFilesDir().getPath() + "/" + book.getId() + ".mp3");
                 if(file.exists()) {
                     Toast.makeText(ctx, "Playing from device", Toast.LENGTH_LONG).show();
-                    callback.playBook(file, book);
+                    callback.playBook(file, book, progress);
 
                 //otherwise, just stream it
                 } else {
                     Toast.makeText(ctx, "Streaming to device", Toast.LENGTH_LONG).show();
-                    callback.streamBook(book);
+                    callback.streamBook(book, progress);
                 }
 
                 //start updating the seekbar
@@ -180,7 +183,7 @@ public class BookDetailsFragment extends Fragment {
         pause_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.pauseBook();
+                callback.pauseBook(progress);
                 seeker.post(new Runnable() {
                     @Override
                     public void run() {

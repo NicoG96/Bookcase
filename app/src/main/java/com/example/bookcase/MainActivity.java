@@ -14,7 +14,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import java.io.File;
 import java.util.ArrayList;
 import edu.temple.audiobookplayer.AudiobookService;
@@ -61,12 +60,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
         try {
             savedInstanceState.putInt("book", playingBook.getId());
         } catch(Exception e) {}
         savedInstanceState.putString("query", search.getText().toString());
-        savedInstanceState.putInt("audiopos", 1);
-        super.onSaveInstanceState(savedInstanceState);
+        getSupportFragmentManager().putFragment(savedInstanceState, "booklist", blf);
     }
 
     @Override
@@ -75,7 +74,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         setContentView(R.layout.activity_main);
 
         //get the book list fragment
-        blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
+        if(savedInstanceState != null) {
+            blf = (BookListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "booklist");
+        } else {
+            blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
+        }
+
         assert blf != null;
 
         //make a search search_button object
@@ -84,23 +88,22 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         //make a search text object
         search = findViewById(R.id.search_bar);
 
+        if(savedInstanceState != null) {
+            String query = savedInstanceState.getString("query");
+            if(!query.equals("")) {
+                blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
+            }
+        }
+
         search_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if(savedInstanceState != null) {
-                    String query = savedInstanceState.getString("query");
-                    if(!query.equals("")) {
-                        blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
-                    }
-
+                if(search.getText().toString().equals("")) {
+                    blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
+                    Toast toast = Toast.makeText(getApplicationContext(), "Please enter a search query", Toast.LENGTH_SHORT);
+                    toast.show();
                 } else {
-                    if(search.getText().toString().equals("")) {
-                        blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php");
-                        Toast toast = Toast.makeText(getApplicationContext(), "Please enter a search query", Toast.LENGTH_SHORT);
-                        toast.show();
-                    } else {
-                        String query = search.getText().toString();
-                        blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
-                    }
+                    String query = search.getText().toString();
+                    blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
                 }
             }
         });
@@ -138,54 +141,55 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    public void playBook(File file, Book book){
+    public void playBook(File file, Book book, int pos){
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
         }
 
         //check to see if this audiobook has been played before
-        int pos = getInfo(book.getTitle());
+        int last = getInfo(book.getTitle());
 
         //start playing book
-        audiobook.seekTo(pos);
         audiobook.play(file);
+        audiobook.seekTo(last);
 
         //keep track of which book we're playing
         this.playingBook = book;
     }
 
     @Override
-    public void streamBook(Book book){
+    public void streamBook(Book book, int pos){
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
+        /** SHOULD BE IF AUDIOBOOK IS PLAYING, NOT NULL */
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
         }
 
         //check to see if this audiobook has been played before
-        int pos = getInfo(book.getTitle());
+        int last = getInfo(book.getTitle());
 
-        audiobook.seekTo(pos);
         audiobook.play(book.getId());
+        audiobook.seekTo(last);
 
         //keep track of which book we're playing
         this.playingBook = book;
     }
 
     @Override
-    public void pauseBook(){
+    public void pauseBook(int pos){
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
+            audiobook.pause();
         }
-        audiobook.pause();
     }
 
     @Override

@@ -51,18 +51,18 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void playBook(File file, Book book){
+    public void playBook(File file, Book book, int pos){
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
         }
 
         //check to see if this audiobook has been played before
-        int pos = getInfo(book.getTitle());
+        //int pos = getInfo(book.getTitle());
 
         //start playing book
         audiobook.seekTo(pos);
@@ -73,18 +73,18 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void streamBook(Book book){
+    public void streamBook(Book book, int pos){
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
         }
 
         //check to see if this audiobook has been played before
-        int pos = getInfo(book.getTitle());
+        //int pos = getInfo(book.getTitle());
 
         audiobook.seekTo(pos);
         audiobook.play(book.getId());
@@ -94,9 +94,9 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     }
 
     @Override
-    public void pauseBook(){
+    public void pauseBook(int pos){
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), 100);
+            saveInfo(playingBook.getTitle(), pos);
         }
         audiobook.pause();
     }
