@@ -32,6 +32,7 @@ import static com.example.bookcase.MainActivity.library;
 
 public class BookDetailsFragment extends Fragment {
     Book book;
+    Book playingBook;
 
     //book details
     TextView title;
@@ -84,6 +85,15 @@ public class BookDetailsFragment extends Fragment {
         }
     }
 
+    /** Attempt at restoring currently-playing on UI change
+    /*
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currbook", library.indexOf(playingBook));
+    }
+    */
+
     @Override
     public void onDetach() {
         callback = null;
@@ -113,16 +123,34 @@ public class BookDetailsFragment extends Fragment {
         dl_btn = rootView.findViewById(R.id.download_btn);
         dl_progress = rootView.findViewById(R.id.dl_progress);
 
-        //TRY to get a passed index if there is one
+        /** attempt at bringing up the last played book, savedInstanceState.get() method not returning correct number, .put() method works though
+
+         //TRY to get a passed index if there is one
+        if(savedInstanceState != null) {
+            displayBookInfo(savedInstanceState.getInt("currbook"), ctx);
+        } else {
+            try {
+                int index = getArguments().getInt("index");
+
+                //if there is, then display the fields of the book
+                displayBookInfo(index, ctx);
+
+            /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
+            so we can just return the inflated view as is
+            } catch(NullPointerException e) {}
+        }
+        */
+
         try {
             int index = getArguments().getInt("index");
 
             //if there is, then display the fields of the book
             displayBookInfo(index, ctx);
 
-        /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
-        so we can just return the inflated view as is */
+            /* if there isn't, then this is a 2-panel device instantiating this fragment for first time,
+            so we can just return the inflated view as is */
         } catch(NullPointerException e) {}
+
 
         //create click listeners
         play_btn.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +179,7 @@ public class BookDetailsFragment extends Fragment {
                         }
                     }
                 });
+                playingBook = book;
             }
         });
 

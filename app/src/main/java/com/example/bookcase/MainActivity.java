@@ -62,50 +62,18 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        SharedPreferences.Editor editor = getSharedPreferences("search", Context.MODE_PRIVATE).edit();
-        editor.putString("query", query);
-        try {
-            saveInfo(playingBook.getTitle(), playingPos);
-        }catch (Exception e) {}
-        editor.apply();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SharedPreferences sharedPref = getSharedPreferences("search", Context.MODE_PRIVATE);
-        query = sharedPref.getString("query", "");
-
-        if(!query.equals("")) {
-            blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         try {
             savedInstanceState.putInt("book", playingBook.getId());
         } catch(Exception e) {}
-        savedInstanceState.putString("query", search.getText().toString());
-        getSupportFragmentManager().putFragment(savedInstanceState, "booklist", blf);
     }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-/*
-        //get the book list fragment
-        if(savedInstanceState != null) {
-            blf = (BookListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "booklist");
-        } else {
-            blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
-        }
-*/
+
         blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
         assert blf != null;
 
@@ -114,13 +82,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         //make a search text object
         search = findViewById(R.id.search_bar);
-
-        if(savedInstanceState != null) {
-            query = savedInstanceState.getString("query");
-            if(!query.equals("")) {
-                blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
-            }
-        }
 
         search_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

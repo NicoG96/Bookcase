@@ -1,8 +1,10 @@
 package com.example.bookcase;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,9 @@ import static com.example.bookcase.MainActivity.library;
 public class BookListFragment extends Fragment {
     ArrayAdapter<Book> adapter;
     ListView booklist;
+    String currentQuery;
+    SharedPreferences prefs;
+    SharedPreferences.Editor ed;
 
     public BookListFragment() {}
     onBookSelectedListener callback;
@@ -47,6 +52,20 @@ public class BookListFragment extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("query", currentQuery);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ed.putString("query", currentQuery);
+        ed.commit();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_book_list, container, false);
 
@@ -57,7 +76,11 @@ public class BookListFragment extends Fragment {
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, library);
 
         //start background task to populate list view
-        getBooks("https://kamorris.com/lab/audlib/booksearch.php");
+        if(savedInstanceState != null) {
+            getBooks(savedInstanceState.getString("query"));
+        } else {
+            getBooks("https://kamorris.com/lab/audlib/booksearch.php");
+        }
 
         //create listener for each book
         booklist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -67,10 +90,15 @@ public class BookListFragment extends Fragment {
                 callback.onBookSelected(position);
             }
         });
+
+        prefs = getActivity().getPreferences(Context.MODE_PRIVATE);
+        ed = prefs.edit();
+        ed.apply();
         return v;
     }
 
     public void getBooks(String site) {
+        currentQuery = site;
         new getBookListTask(booklist, adapter).execute(site);
     }
 
