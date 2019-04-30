@@ -19,6 +19,7 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     Book viewingBook;
     Book playingBook;
     int bookIndex;
+    int playingPos;
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -52,21 +53,26 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
 
     @Override
     public void playBook(File file, Book book, int pos){
+        playingPos = pos;
+
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), pos);
+            if(pos - 10 <= 0) {
+                saveInfo(playingBook.getTitle(), 0);
+            } else {
+                saveInfo(playingBook.getTitle(), pos - 10);
+            }
         }
 
         //check to see if this audiobook has been played before
-        //int pos = getInfo(book.getTitle());
+        int last = getInfo(book.getTitle());
 
         //start playing book
-        audiobook.seekTo(pos);
-        audiobook.play(file);
+        audiobook.play(file, last);
 
         //keep track of which book we're playing
         this.playingBook = book;
@@ -74,20 +80,24 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
 
     @Override
     public void streamBook(Book book, int pos){
+        playingPos = pos;
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), pos);
+            if(pos - 10 <= 0) {
+                saveInfo(playingBook.getTitle(), 0);
+            } else {
+                saveInfo(playingBook.getTitle(), pos - 10);
+            }
         }
 
         //check to see if this audiobook has been played before
-        //int pos = getInfo(book.getTitle());
+        int last = getInfo(book.getTitle());
 
-        audiobook.seekTo(pos);
-        audiobook.play(book.getId());
+        audiobook.play(book.getId(), last);
 
         //keep track of which book we're playing
         this.playingBook = book;
@@ -97,14 +107,16 @@ public class bookDetails extends FragmentActivity implements BookDetailsFragment
     public void pauseBook(int pos){
         if(audiobook != null) {
             saveInfo(playingBook.getTitle(), pos);
+            audiobook.pause();
+            playingPos = pos;
         }
-        audiobook.pause();
     }
 
     @Override
     public void stopBook(){
         saveInfo(playingBook.getTitle(), 0);
         audiobook.stop();
+        playingPos = 0;
     }
 
     @Override

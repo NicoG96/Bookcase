@@ -27,6 +27,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     Book viewingBook;
     Book playingBook;
+    int playingPos;
+
+    String query;
 
     boolean connected;
     static AudiobookService.MediaControlBinder audiobook;
@@ -59,6 +62,29 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = getSharedPreferences("search", Context.MODE_PRIVATE).edit();
+        editor.putString("query", query);
+        try {
+            saveInfo(playingBook.getTitle(), playingPos);
+        }catch (Exception e) {}
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = getSharedPreferences("search", Context.MODE_PRIVATE);
+        query = sharedPref.getString("query", "");
+
+        if(!query.equals("")) {
+            blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         try {
@@ -72,14 +98,15 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+/*
         //get the book list fragment
         if(savedInstanceState != null) {
             blf = (BookListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "booklist");
         } else {
             blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
         }
-
+*/
+        blf = (BookListFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_book_list);
         assert blf != null;
 
         //make a search search_button object
@@ -89,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         search = findViewById(R.id.search_bar);
 
         if(savedInstanceState != null) {
-            String query = savedInstanceState.getString("query");
+            query = savedInstanceState.getString("query");
             if(!query.equals("")) {
                 blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
             }
@@ -102,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     Toast toast = Toast.makeText(getApplicationContext(), "Please enter a search query", Toast.LENGTH_SHORT);
                     toast.show();
                 } else {
-                    String query = search.getText().toString();
+                    query = search.getText().toString();
                     blf.getBooks("https://kamorris.com/lab/audlib/booksearch.php?search=" + query);
                 }
             }
@@ -142,21 +169,26 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void playBook(File file, Book book, int pos){
+        playingPos = pos;
+
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), pos);
+            if(pos - 10 <= 0) {
+                saveInfo(playingBook.getTitle(), 0);
+            } else {
+                saveInfo(playingBook.getTitle(), pos - 10);
+            }
         }
 
         //check to see if this audiobook has been played before
         int last = getInfo(book.getTitle());
 
         //start playing book
-        audiobook.play(file);
-        audiobook.seekTo(last);
+        audiobook.play(file, last);
 
         //keep track of which book we're playing
         this.playingBook = book;
@@ -164,21 +196,25 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void streamBook(Book book, int pos){
+        playingPos = pos;
+
         if(playingBook == null) {
             playingBook = viewingBook;
         }
 
         //save position of current audiobook if there's one playing
-        /** SHOULD BE IF AUDIOBOOK IS PLAYING, NOT NULL */
         if(audiobook != null) {
-            saveInfo(playingBook.getTitle(), pos);
+            if(pos - 10 <= 0) {
+                saveInfo(playingBook.getTitle(), 0);
+            } else {
+                saveInfo(playingBook.getTitle(), pos - 10);
+            }
         }
 
         //check to see if this audiobook has been played before
         int last = getInfo(book.getTitle());
 
-        audiobook.play(book.getId());
-        audiobook.seekTo(last);
+        audiobook.play(book.getId(), last);
 
         //keep track of which book we're playing
         this.playingBook = book;
@@ -189,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if(audiobook != null) {
             saveInfo(playingBook.getTitle(), pos);
             audiobook.pause();
+            playingPos = pos;
         }
     }
 
@@ -196,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     public void stopBook(){
         saveInfo(playingBook.getTitle(), 0);
         audiobook.stop();
+        playingPos = 0;
     }
 
     @Override
